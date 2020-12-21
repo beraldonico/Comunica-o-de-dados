@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese,brazilian]{babel}
+\usepackage[top=2cm, bottom=2cm, left=4cm, right=4cm]{geometry}
+
+\title{Trabalho 3 comunicação de dados}
+\author{Nicolas Beraldo}
+\date{Outubro 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{caption}
+
+\begin{document}
+    \maketitle
+        \begin{center}
+            O chaveamento FSK usa frequencias diferentes para representar bits diferentes e essas frequencias são basesdas na portadora, o qual apenas os destinatarios terão, assim tornando a comunicação segura.
+        \end{center}
+    \section*{Introdução}
+       O FSK é uma tipo de modulação que usa duas frequencias relacionadas a uma portadora para obter um sinal modulado. Escolhe-se uma varição de frequencia que irá variar a frequencia da portadora e criará sinais de portadoras que serão usados para a modulação. Apenas olhando para um sinal modulado facilmente perceberemos onde há uma mudança de bit, cada bit terá sua onda caracteristica com seus aspectos unicos.
+    \section{Modulação}
+        Nesta parte um sinal com a codificação NZR polar foi utilizada, onde o bit 0 é representado por -1 e o bit 1 é representado por 1. Definiu-se que a frequencia da portadora seria de 200 Hz com uma variança de 100 Hz para realizar a modulação. Para determinar qual frenquacia iria ser usada para o bit uma comparação foi feita para saber se o sinal de entrada teria uma tensão negativa ou positiva e dependendo da condição recebia a sua respectiva portadora. 
+        
+        Um fator interessante dessa forma de modulação é que ao analisar o sinal modulado, se não souber qual frequencia representa cada bit não será possivel saber qual é a string correta, será possivel dizer quais são iguais mas não qual é representado assim tendo 50\% de analisar o codigo corretamte sem a frequencia da portadora correta.
+        
+        Abaixo temos os graficos de saida:
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale= 0.5]{FSK_1.png}
+            \caption{Modulação do sinal}
+            \label{fig:modulacao}
+        \end{figure}
+        Na figura \ref{fig:modulacao} no grafico 7 percebe-se que é uma interseção doos graficos 1,3 e 5. Qaundo o grafico 1 indica bit 0 nos usamos a portadora menos a variação que é mostrada no grafico 3 e quando o bit é 1 usamos a portadora mais a variação que e mostrada no grafico 5.
+        
+        Um detalhe interessante de se perceber é que o FFT do sinal modulado tem dois picos que são equivalentes as frequencias usadas pelas portadoras.
+    \section{Demodulação}
+        Para realizar a demodulação é necessario saber qual e quando um bit ocorre no sinal então utilizou-se uma relação entre um sinal VCO e um PLL para obter um sinal já filtrado. O VCO utiliza uma frequencia baseada na portadora e no ponto sendo anaisado no momento enquanto o pll é definido usando o sinal modulado e o VCO, ha uma subtração binaria entre os dois sinais essa subtração resulta no PLL que indica quando queno sinal há uma troca de fase, assim indicando quando que há uma troca de bit. 
+        
+        A relação entre o PLL e o VCO alem de indicar quando há um troca de bit também consegue indicar qual o bit representado quando há a troca da fase do sinal. Assim se pode verificar nos graficos.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale= 0.5]{FSK_2.png}
+            \caption{Demodulação do sinal}
+            \label{fig:demodulacao}
+        \end{figure}
+        Verifica-se na figura \ref{fig:demodulacao} no grafico 5 que sempre que há uma troca de bit há uma barra para cima ou para baixo, quando a barra é pra baixo indica tensão negativa que representa o bit 0 e quando e pra cima indica tensão positiva e representa o bit 1, o grafico 5 é gerado usando uma comparação entre o grafico 4 e o grafico 7, transformamos ambos os graficos em representação binaria.
+        
+        Todo o processo de demodulação é representado pelo loop:
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale= 0.5]{FSK_3.png}
+            \caption{Codigo de demodulação}
+            \label{fig:codigo}
+        \end{figure}
+\end{document}

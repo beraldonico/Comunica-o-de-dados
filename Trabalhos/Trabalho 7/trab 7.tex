@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese,brazilian]{babel}
+\usepackage[top=2cm, bottom=2cm, left=4cm, right=4cm]{geometry}
+
+\title{Trabalho 7 comunicação de dados}
+\author{Nicolas Beraldo}
+\date{dezembro 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage{subfigure}
+
+\begin{document}
+    \maketitle
+        \begin{center}
+            Será apresentado a história, o funcionamento e as aplicações do protocolo de comunicação PCI express. 
+        \end{center}
+        
+    \section*{Introdução}
+        O PCI express é um protocolo muito usado na informática pela praticidade, Ele é capaz de suportar outros protocolos facilitando na prototipação de hardware. O PCI se baseia na comunicação em camadas.
+        
+    \section{História}
+        Em quase duas décadas a tecnologia usada no protocolo PCI express foi bastante atualizada, mostrando como é um protocolo importante hoje em dia.
+        
+        Em 2003 foi criado o PCI express 1.0 possuindo uma taxa de transferência de 250Mb/s por faixa, totalizando 2GT/s. Em janeiro de 2007 foi lançado a versão 2.0, Capaz de dobrar a taxa de dados da versão 1.0 tinha uma transferência de 500Mb/s, em alguns modelos que possuía uma 32 faixas ele era capaz de transferir até 16Gb/s. As altas taxas de transferência e a retro compatibilidade com o seu antecessor fizeram a versão 2.0 ser padronizada. Em novembro de 2010 foi disponibilizado a versão 3.0 tendo um melhoramento da codificação afim de aumentar as velocidades de comunicação, assim melhorando de 5GT/s para 8GT/s.
+        
+        O padrão PCI-e mais atual é o 4.0 que foi finalizado em dezembro de 2017, mesmo sendo pouco usado pelos computadores atuais ele possui o dobro de velocidade da versão 3.0. Há rumores de que a versão 5.0 será lançada em 2019. Na figura \ref{fig:versoes} há uma breve comparação entre as versões, quantidade de faixas e suas velocidades.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale =.55]{pcie_specs.jpg}
+            \caption{Comparação entre versões de PCI-e}
+            \label{fig:versoes}
+        \end{figure}
+        
+    \section{Funcionamento}
+        PCI-e utiliza uma arquitetura de barramento paralela compartilhada, de modo que o “host” e os dispositivos compartilham um conjunto de linhas de endereço. É utilizado um barramento peer-to-peer com suas ligações em serie individuais até o host raiz, assim suportando comunicação full-duplex.
+        
+        Como todo protocolo há uma forma específica de realizar a codificação e decodificação dos dados. Os dados são encapsulados em pacotes e os processos de decodificar/encapsular e desencapsular/decodificar é feita pela camada de transação dedicada.
+        
+        Uma conexão PCI-e pode ter de 1 até 32 faixas. Conexões de multi-faixas é quando os dados são distribuídos pelas faixas tendo um pico de transferência que é multiplicado para todo o conjunto de faixas. Sistemas de multi-faixas são muito benéfico, combinar faixas para se obter uma maior taxa de transferência, independentemente da quantidade de faixas do dispositivo, logo quanto mais faixas utilizados melhores serão as taxas. Na figura \ref{fig:PCI} é possível ver os tipos de conectores PCI.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale = .85]{pci.png}
+            \caption{conexões PCI}
+            \label{fig:PCI}
+        \end{figure}
+        O destacado com o nome PCI seria a versão mais antiga, nem possui o termo express nele pois é antes de idealização desse novo protocolo, no meio é possível visualizar os PCI-e mais comumente encontrados nos computadores ,normalmente usadas por SSDs, e a direita as PCI-e de x16, normalmente são usadas por GPUs.
+        
+        Na figura \ref{fig:conexoes} é possível visualizar como é feita a comunicação de um PCI.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale = .33]{conexoes.png}
+            \caption{Conexões de um PCI}
+            \label{fig:conexoes}
+        \end{figure}
+        Os termos na figura estão em inglês mas a interpretação é simples. O sinalizado pelo “Link” representa a conexão inteira, os tipos de “Links” são mostrados na figura \ref{fig:PCI}, “Lane” seria as faixas mencionadas anteriormente, “wire” e “signal” podem ser considerados como um, em cada faixa ha dois fios que são por onde a comunicação full-duplex ocorre.
+        
+        A transmissão de dados do PCI-e é diferente do que a PCI convencional porque o express manda as mensagens de controle e interrupção pelo mesmo local do que as de dados enquanto a convencional tem faixas dedicadas apenas para as mensagens de interrupção. Em casos de multi-faixas os BITs subsequente a um são enviado em faixa subsequentes a faixa utilizada para enviar o primeiro BIT, isso é conhecido como “striping” ou distribuição de dados, em português, a complexidade de sincronizar os dados nesse tipo de transferência explica o motivo de ter demorado 7 anos para lançarem a versão 3.0.
+        
+    \section{Aplicações}
+        Como mencionado antes o protocolo PCI-e foi padronizado para o seu uso em desktops e notebooks e é facilmente encontrado em qualquer computador fabricado desde os anos 2000s. Esse protocolo tem uma ampla aplicação devido ao motivo de aceitar outros protocolos e a seguir descreveremos algumas das suas aplicações.
+        \begin{itemize}
+            \item 
+                GPUs:
+                
+                    Empresas como a Nvidia e AMD utilizam PCI-e desde 2010 para utilizar múltiplas placas de vídeo em um computador. O sistema da Nvidia é conhecido como SLI e o da AMD como CrossFire.
+                    \begin{figure}[H]
+                        \centering
+                        \subfigure[titan][Titan X da Nvidia]{
+                            \includegraphics[scale = .75]{titanx.png}
+                        }
+                        \subfigure[radeon][Radeon da AMD]{
+                            \includegraphics[scale=0.23]{radeon.jpg}
+                        }
+                        \caption{GPUs com PCI-e}
+                        \label{fig:GPUs}
+                    \end{figure}
+            \item
+                Dispositivos de armazenamento:
+                    
+                    Desde sempre a busca de altas velocidade foi grande, com a implementação do PCI-e e a criação dos SSD, dois componentes que trabalham a altas taxas, algumas empresas começaram a juntar os dois para se obter dispositivos de armazenamento de alto desempenho, capazes de ler e escrever arquivos de 2GB/s a 4GB/s. Esses dispositivos usam Sata express ou NVM express que são tecnologias baseados no protocolo PCI-e.
+                    \begin{figure}[H]
+                        \centering
+                        \subfigure[Desk][SSD para desktop]{
+                            \includegraphics[scale = .5]{ssd_desk.jpg}
+                        }
+                        \subfigure[M2][SSD M.2]{
+                            \includegraphics[scale = 0.4]{ssd_m2.jpg}
+                        }
+                        \caption{SSDs}
+                        \label{fig:SSDs}
+                    \end{figure}
+        \end{itemize}
+\end{document}

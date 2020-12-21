@@ -1,0 +1,49 @@
+﻿Escolher um protocolo de comunicações de sua preferência e realizar um estudo sobre seu funcionamento, características e aplicações. 
+O trabalho deverá conter:
+
+
+- histórico
+
+
+- funcionamento
+
+
+- característica
+
+
+- aplicações
+
+
+- hardware envolvido
+
+Alguns dos protocolos que podem ser escolhidos (mas não são limitados a esta lista):
+
+
+	- CAN
+
+
+	- FlexRay
+
+
+	- TTP
+
+
+	- IEEE 802.15.4
+
+
+	- Bluetooth
+
+
+	- I²C
+
+
+	- 1-wire
+
+
+	- RS-232 e RS-485
+
+
+	- SPI
+
+
+	- Microwire

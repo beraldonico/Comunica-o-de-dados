@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese,brazilian]{babel}
+\usepackage[top=2cm, bottom=2cm, left=4cm, right=4cm]{geometry}
+
+\title{Trabalho 2 comunicação de dados}
+\author{Nicolas Beraldo}
+\date{Setembro 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{caption}
+
+\begin{document}
+    \maketitle
+        \begin{center}
+            Simulação de Emissor e Receptor com diferentes tipos de codificação e frequência de corte para um filtro passa-baixo.
+        \end{center}
+    \section*{Introdução}
+        Iremos aplicar os passos necessários para realizar a modulação e demodulação ASK, do inglês "Amplitude-shift Keying". Criaremos um sinal digital usando os métodos do trabalho anterior e o modularemos, esse sinal é passado para o receptor que o demodula e interpreta o sinal. A parte final deste trabalho é juntar três sinais em um só e fazer cada receptor interpretar o seu respectivo sinal.
+    \section{Parte 1}
+        Iniciamos o trabalho criando um sinal digital, como feito no trabalho anterior, com a decodificação NZR Unipolar, criamos uma portadora com uma frequência especifica e multiplicamos a portadora pelo sinal digital para obter o sinal modulado. Durante o processo de criar a portadora e obter o sinal modulado realizamos as transformadas de Fourier para mostrar as frequências que serão usadas para a próxima parte do trabalho a função FFT adquirida do professor. Abaixo temos os gráficos gerados pelo código dessa parte: 
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.5]{parte_1.png}
+                \caption{Modulação de um sinal e FFTs respectivos}
+                \label{fig:modulacao e FFT}
+            \end{center}
+        \end{figure}
+        Nessas imagens percebemos que a portadora e o sinal modulado possuem uma frequência destaca em comum, essa frequência será a nossa base para a próxima parte do trabalho, essa frequência representa a frequência da portadora. Na figura 1 no gráfico 6 se nota que há outras duas frequências destacadas próxima a comentada anteriormente. Essas duas frequências serão as usadas para demultiplexar o sinal e obter o sinal apos a multiplexação dos três. Também é fácil de notar que a variação do sinal modulado é idêntico ao sinal digital.
+        
+    \section{Parte 2}
+        Usando de base o código da primeira parte continuamos com a demodulação do sinal, para isso retificamos o sinal modulado para ter apenas pontos positivos pois estamos trabalhando com um codificação que varia de 0 a 1. Apos retificar o sinal usando a função "ABS"do octave passamos um filtro passa-baixo para obter um sinal mais claro, nesta parte a frequência de corte foi de 200 mas na próxima parte usaremos a quinta harmônica. Apos obter o sinal filtrado basta comparar os seus pontos para obter a saída. Abaixo temos os gráficos gerados pelo código dessa parte: 
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.5]{parte_2.png}
+                \caption{Stream de bit convertido para neveis de tensão}
+                \label{fig:Stream de bits convertido}
+            \end{center}
+        \end{figure}
+        Como dito anteriormente percebemos que o sinal modulado é o sinal digital tem um grande semelhança, isso se deve porque um é consequência do outro, o sinal retificado parece exatamente com o sinal digital o que já indica um bom andamento da comunicação já que o sinal retificado faz parte do receptor. Apos obter o sinal retificado passamos um filtro passa baixa com a frequência de 200 Hz para obter o gráfico 5 da figura 2 e basta comparar o ponto obtido com 0.5 para dizer se o bit que esta sendo representado é 0 ou 1, se tivéssemos usando umas das harmônicas teríamos uma gráfico representando o sinal filtrado mais linear.
+     \section{Parte 3}
+        Agora aplicaremos os conhecimentos de modulação e demodulação a um fato comum na na comunicação, multiplexar vários sinais para enviar apenas um mas cada receptor interpretar o sinal baseado na sua respectiva portadora. para fazer isso fazermos a modulação e demodulação igual as partes anteriores mas no meio colocaremos uma soma dos sinais modulados para criar um único sinal e antes de retificar passaremos um filtro passa banda com as frequências comentadas na parte 1.
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.5]{parte_3_1.png}
+                \caption{Stream de bit convertido para neveis de tensão}
+                \label{fig:Stream de bits convertido}
+            \end{center}
+        \end{figure}
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.5]{parte_3_2.png}
+                \caption{Stream de bit convertido para neveis de tensão}
+                \label{fig:Stream de bits convertido}
+            \end{center}
+        \end{figure}
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.5]{parte_3_3.png}
+                \caption{Stream de bit convertido para neveis de tensão}
+                \label{fig:Stream de bits convertido}
+            \end{center}
+        \end{figure}
+        Criamos um sinal digital, criamos uma portadora e multiplicamos os dois para obter o sinal modulado, do sinal modulado fizemos a FFT para obter as frequências que melhor se encaixam no filtro passa banda para desmultiplexar o sinal. Apos fazer isso com os três sinais nos o somamos pontualmente para obter um sinal único, passamos o passa banda e obtemos de volta um sinal parecido com o modulado, infelizmente ele tem um leve atraso de um bit, o que poderia ser solucionado usando uma codificação que tenha capacidade de fazer a sincronização de sinal. apos obter o sinal demultiplexado o retificamos, filtramos e o comparamos com a metade do máximo para obter as saídas. Como dito antes elas tem um atraso mas felizmente estão todas corretas.
+\end{document}

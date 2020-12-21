@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese,brazilian]{babel}
+\usepackage[top=2cm, bottom=2cm, left=4cm, right=4cm]{geometry}
+
+\title{Trabalho 5 comunicação de dados}
+\author{Nicolas Beraldo}
+\date{Outubro 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{caption}
+
+\begin{document}
+    \maketitle
+        \begin{center}
+            Este trabalho irá explicar e demonstrar os passos necessários para realizar um Hamming code.
+        \end{center}
+    \section*{Introdução}
+        O hamming code se baseia em aumentar o tamanho da mensagem a ser enviada, assim os BITs adicionais serão usados para verificar se há erro na mensagem enviada. Os BITs adicionais tem o nome de BIT de paridade.
+    \section{Hamming code}
+        Para se usar a metodologia de processamento de erro do Hamming code é necessário que o emissor prepare a mensagem para o envio. O emissor faz uma análise de quantos bit há na mensagem a ser enviada e com essa informação faz uma conta simples para descobrir o tamanho da mensagem. A quantidade de BITs de paridade é “R” na seguinte equação:
+        \[ 2^R >= Tamanho\ da\ mensagem + R + 1 \]
+        Assim o tamanho da mensagem é:
+        \[ Tamanho\ para\ transmissão = R + Tamanho\ da\ mensagem\]
+        Os BITs de paridade são todos aqueles que tem a sua posição sendo uma potencia de 2, logo são todos que tem como BIT ativo menos significativo sendo o BIT mais significativo. Para descobrir se o BIT de paridade é 0 ou 1 é necessário fazer o teste lógico "XOR" entre os BITs específicos, a escolha o BIT é feito se baseando no BIT ativo da posição em binário do bit de paridade. Então o BIT de paridade da posição "4" tem a sua posição sendo "100", assim todos os BITs que tiverem o terceiro BIT ativo será incluso no "XOR" do BIT de paridade. Essa lógica é aplicada para todos os BITs de paridade assim criando uma mensagem que é capaz de identificar se há erro na mensagem.
+        
+        Para se obter a mensagem de erro e saber se há erro ou não se realiza os "XOR" para os mesmo BITs se usando a mesma base para os BITs de paridade. Caso ao realizar os "XOR" e o resultado der 1 indica que ha um erro em algum BIT, após realizar o teste em todos os BITs de paridade se realiza uma soma com as posições em binário para descobrir em que posição se encontra o erro. Assim sendo um processo simples para preparar a mensagem e corrigi-la.
+    \section{Mensagem de 7 dados}
+        Nessa mensagem de 7 dados é necessário 4 BITs de paridade para transmitir a mensagem e indicar se ha erro ou não.
+        Apos definir o tamanho da mensagem a ser transmitida os bits da mensagem são inseridos nas posições corretas usando a ideia de que serão adicionados nas posições que não forem da base 2, deixando as posições dos BITs de paridade disponíveis. Agora é analisado quando se escolhe uma posição que seja da base 2 e realizamos os "XOR" necessários se baseando na no BITs da posição.
+        
+        A relação dos BITs de paridade e quais BITs influenciam o seu valor está na tabela abaixo:
+        \begin{center}
+            \begin{tabular}{|c | c |} 
+                \hline
+                BIT de paridade & BITs usados no "XOR" \\ [0.5ex] 
+                \hline
+                1 & 1,3,5,7,9,11\\ 
+                \hline
+                2 & 2,3,6,7,10,11\\
+                \hline
+                4 & 4,5,6,7\\
+                \hline
+                8 & 8,9,10,11\\
+                \hline
+            \end{tabular}
+        \end{center}
+        Se há um numero ímpar de "1"s nos BITs usados no "XOR" o BIT de paridade é "1" e caso seja um numero par de "1"s o BIT de paridade é "0", é por isso que recebe o nome "BIT de paridade". Para recuperar a mensagem após a correção ou não de um erro basta selecionar os BITs que não seja da base 2.
+    \section{Mensagem de texto}
+        O processo nesse caso é idêntico, apenas é adicionado um LOOP em todo o processo e o mesmo ocorre para todos os caracteres da mensagem, sendo um envio de caracteres em série.
+    
+
+\end{document}

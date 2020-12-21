@@ -1,0 +1,387 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese,brazilian]{babel}
+\usepackage[top=2cm, bottom=2cm, left=4cm, right=4cm]{geometry}
+
+\title{Trabalho 1 comunicação de dados}
+\author{Nicolas Beraldo}
+\date{Setembro 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{caption}
+
+\begin{document}
+    \maketitle
+        \begin{center}
+            Simulação de Emissor e Receptor com diferentes tipos de codificação e frequência de corte para um filtro passa-baixo.
+        \end{center}
+    \section*{Introdução}
+       Neste trabalho iremos implementar, em Octave, como um emissor de sinais digitais ira converter o nível de tensão(0V ou 5V) usando um filtro passa-baixo com frequência de cortes diferentes e como um receptor interpreta o sinal filtrado. As frequências de corte utilizadas foram as harmônicas. Também simularemos um ruido para ver como o receptor interpreta o sinal afetado.
+
+    \section{Parte 1}
+        Nessa parte implementamos o básico de como converter uma stream de bits em uma amostra de tensão. 
+    
+        Utilizamos a stream 0101010111000 com uma amostragem de 100 pontos por bit e frequência de 1 Kbps. Utilizamos a convenção comum de tensão, se o bit é 0(zero) a tensão é 0V(zero) e se o bit é 1(um) a tensão é 5V(cinco). Obtivemos o seguinte gráfico:
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.7]{Parte_1.png}
+                \caption{Stream de bit convertido para neveis de tensão}
+                \label{fig:Stream de bits convertido}
+            \end{center}
+        \end{figure}
+        
+    \section{Parte 2}
+        Agora implementamos um filtro passa-baixo que utiliza algumas harmônicas como frequência de corte. Considerando a frequência da entrada como 1Kbps = 1000 bps e primeira harmônica sendo a metade da frequência de entrada os valores das frequências de corte são as seguintes:
+        \begin{itemize}
+            \item 1/2 frequência harmônica = 250 Hz
+            \item 1 frequência harmônica = 500 Hz
+            \item 3 frequência harmônica = 1500 Hz
+            \item 5 frequência harmônica = 2500 Hz
+            \item 7 frequência harmônica = 3500 Hz
+            \item 9 frequência harmônica = 4500 Hz
+        \end{itemize}
+        Usamos o pacote "signal" do Octave que tem as funções "butter" e "filter" implementados. Essas funções são responsáveis por realizar o processo de filtragem do sinal. 
+        
+        Os gráficos a seguir comparam o sinal de entrada com o sinal apos passar no filtro:
+        \begin{figure}[H]
+            \begin{multicols}{2}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_1.png}
+                        \caption{1/2 harmônica}
+                        \label{fig:Parte_2_1}
+                    \end{center}
+                \end{figure}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_3.png}
+                        \caption{3 harmônica}
+                        \label{fig:Parte_2_3}
+                    \end{center}
+                \end{figure}
+                
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_2.png}
+                        \caption{1 harmônica}
+                        \label{fig:Parte_2_2}
+                    \end{center}
+                \end{figure}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_4.png}
+                        \caption{5 harmônica}
+                        \label{fig:Parte_2_4}
+                    \end{center}
+                \end{figure}
+            \end{multicols}
+        \end{figure}
+        \begin{figure}[H]
+            \begin{multicols}{2}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_5.png}
+                        \caption{7 harmônica}
+                        \label{fig:Parte_2_5}
+                    \end{center}
+                \end{figure}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_6.png}
+                        \caption{9 harmônica}
+                        \label{fig:Parte_2_6}
+                    \end{center}
+                \end{figure}
+            \end{multicols}
+            \caption{Sinal de entrada vs. Sinal filtrado}
+            \label{fig:Parte_2}
+        \end{figure}
+        Após o sinal passar pelo filtro ele seria enviado para um receptor e o interpretaria para obter os mesmos dados de entrada. O receptor tem que estar em sincronia com o emissor, logo ambos possuem a informação da frequencial e a quantidade de amostrar por bit. Utilizando uma logica simples conseguimos fazer o receptor identificar os bits, nos deixando com os seguintes gráficos, eles comparam o sinal de entrada, o sinal filtrado e o sinal de saída:
+        
+        Em azul a entrada, em amarelo o sinal filtrado e em laranja o sinal de saída,
+        \begin{figure}[H]
+            \begin{multicols}{2}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_7.png}
+                        \caption{1/2 harmônica}
+                        \label{fig:Parte_2_7}
+                    \end{center}
+                \end{figure}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_8.png}
+                        \caption{1 harmônica}
+                        \label{fig:Parte_2_8}
+                    \end{center}
+                \end{figure}
+            \end{multicols}
+        \end{figure}
+        \begin{figure}[H]
+            \begin{multicols}{2}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_9.png}
+                        \caption{3 harmônica}
+                        \label{fig:Parte_2_9}
+                    \end{center}
+                \end{figure}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_11.png}
+                        \caption{7 harmônica}
+                        \label{fig:Parte_2_11}
+                    \end{center}
+                \end{figure}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_10.png}
+                        \caption{5 harmônica}
+                        \label{fig:Parte_2_10}
+                    \end{center}
+                \end{figure}
+                \begin{figure}[H]
+                    \begin{center}
+                        \includegraphics[scale=0.45]{Parte_2_12.png}
+                        \caption{9 harmônica}
+                        \label{fig:Parte_2_12}
+                    \end{center}
+                \end{figure}
+            \end{multicols}
+            %\captionsetup{figure = 2}
+            \caption{Sinal de entrada vs. Sinal filtrado vs. Sinal de saída}
+            \label{fig:Parte_21}
+        \end{figure}
+        Podemos perceber que nesse tipo de codificação a saída já pode ser obtida com a primeira harmônica mas com o tempo do bit muito atrasado. Podemos afirmar que o emissor e receptor tem que estar perfeitamente sincronizados para que a entrada e saída sejam idênticas pois na codificação normal não há um sinal para reiniciar o clock do receptor, que não foi implementado em nenhum código pois não era o foco do trabalho.
+        
+        Também é possível notar que o sinal de saída tem um tempo melhor a partir da terceira harmônica e aumentando a harmônica o tempo fica cada vez mais preciso, podemos ver isso na nona harmônica que o sinal de saída tem um tempo muito próximo ao de entrada.
+        
+        Abaixo temos a comparação entre a entrada e a saída. A variável "data out" é uma matriz de 6 linhas e 13 colunas pois as linhas são as saídas de cada harmônica:
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=.5]{Saida_Emissor_receptor.png}
+                \caption{comparação entre Emissor e receptor}
+                \label{fig:Saida_Emissor_receptor}
+            \end{center}
+        \end{figure}
+        Percebe-se que a partir da terceira harmônica a stream de saída é igual ao de entrada.
+    \section{Parte 3}
+        Nesta parte alteramos o código da parte anterior para adaptar ele para as codificações diferentes, as quais são NZR-I, Manchester e Manchester Diferencial. Cada codificação teu sua forma de criar e interpretar o sinal e cada uma tem as suas dificuldades de implementação mas ao mesmo tempo tem as vantagens, as quais não foram implementadas.
+        
+        \subsection{NZR-I}
+            Nessa codificação o bit 0 mantêm a tensão do bit anterior e o bit 1 inverte a tensão do bit anterior, no nosso caso usamos as tensões 5V e -5V. Os gráficos a seguir mostram a comparação entre entrada, sinal filtrado e saída:
+            \begin{figure}[H]
+                \begin{multicols}{2}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{NZR_I_1.png}
+                            \caption{1/2 harmônica}
+                            \label{fig:NZR_I_1}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{NZR_I_2.png}
+                            \caption{1 harmônica}
+                            \label{fig:NZR_I_2}
+                        \end{center}
+                    \end{figure}
+                    \end{multicols}
+            \end{figure}
+            \begin{figure}[H]
+                \begin{multicols}{2}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{NZR_I_3.png}
+                            \caption{3 harmônica}
+                            \label{fig:NZR_I_3}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{NZR_I_5.png}
+                            \caption{7 harmônica}
+                            \label{fig:NZR_I_5}
+                        \end{center}
+                    \end{figure}
+                
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{NZR_I_4.png}
+                            \caption{5 harmônica}
+                            \label{fig:NZR_I_4}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{NZR_I_6.png}
+                            \caption{9 harmônica}
+                            \label{fig:NZR_I_6}
+                        \end{center}
+                    \end{figure}
+                \end{multicols}
+                %\captionsetup{figure = 2}
+                \caption{Sinal de entrada vs. Sinal filtrado vs. Sinal de saída de NZR-I}
+                \label{fig:NZR_I}
+            \end{figure}
+            Nesse caso percebemos que a comunicação foi eficaz na quinta harmônica e por causa da implementação do código do receptor os tempos são sempre exatos pois ele trabalha com a amostragem dos bit e os seleciona baseado na diferença entre o elemento 50 do bit e do elemento 50 do bit anterior.
+            
+            É possível perceber que a saída é igual a entrada a partir da quinta harmônica.
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[scale=0.5]{Saida_NZR_I.png}
+                    \caption{comparação entre Emissor e receptor}
+                    \label{fig:Saida_NZR_I}
+                \end{center}
+            \end{figure}
+        \subsection{Manchester}
+            Nessa codificação o bit 0 é representado por uma queda de tensão no meio do bit e o bit 1 e representado por um aumento da tensão no meio do bit. Os gráficos a seguir mostram a comparação entre entrada, sinal filtrado e saída:
+            \begin{figure}[H]
+                \begin{multicols}{2}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_1.png}
+                            \caption{1/2 harmônica}
+                            \label{fig:Manchester_1}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_3.png}
+                            \caption{3 harmônica}
+                            \label{fig:Manchester_3}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_2.png}
+                            \caption{1 harmônica}
+                            \label{fig:Manchester_2}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_4.png}
+                            \caption{5 harmônica}
+                            \label{fig:Manchester_4}
+                        \end{center}
+                    \end{figure}
+                \end{multicols}
+            \end{figure}
+            \begin{figure}[H]
+                \begin{multicols}{2}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_5.png}
+                            \caption{7 harmônica}
+                            \label{fig:Manchester_5}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_6.png}
+                            \caption{9 harmônica}
+                            \label{fig:Manchester_6}
+                        \end{center}
+                    \end{figure}
+                \end{multicols}
+                %\captionsetup{figure = 2}
+                \caption{Sinal de entrada vs. Sinal filtrado vs. Sinal de saída de Manchester}
+                \label{fig:Manchester}
+            \end{figure}
+            Nesse caso percebemos que a comunicação foi eficaz, também, na quinta harmônica e usamos o mesmo tipo de implementação que nos NZR-I logo os tempos do bit tão são exatos pois trabalha com a amostragem dos bit e os seleciona baseado na diferença entre o elemento 25 e 75 do mesmo bit assim a diferença entre esses ponto indicara se é o bit 0 ou o bit 1.
+            
+            Abaixo temos a comparação entre a entrada e a saída. A variável "data out" é uma matriz de 6 linhas e 13 colunas pois as linhas são as saídas de cada harmônica:
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[scale=0.5]{Saida_Manchester.png}
+                    \caption{comparação entre Emissor e receptor}
+                    \label{fig:Saida_Manchester}
+                \end{center}
+            \end{figure}
+            É nítido o fato de que a comunicação só foi eficaz a partir da quita harmônica.
+        \subsection{Manchester Diferencial}
+            Nessa codificação o bit 0 é por um transição no inicio do bit e uma inversão no meio enquanto o bit 1 é representado por manter a tensão do bit anterior e uma inversão no meio do bit. Os gráficos a seguir mostram a comparação entre entrada, sinal filtrado e saída:
+            \begin{figure}[H]
+                \begin{multicols}{2}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_diferencial_1.png}
+                            \caption{1/2 harmônica}
+                            \label{fig:Manchester_diferencial_1}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_diferencial_3.png}
+                            \caption{3 harmônica}
+                            \label{fig:Manchester_diferencial_3}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_diferencial_5.png}
+                            \caption{7 harmônica}
+                            \label{fig:Manchester_diferencial_5}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_diferencial_2.png}
+                            \caption{1 harmônica}
+                            \label{fig:Manchester_diferencial_2}
+                        \end{center}
+                    \end{figure}
+                
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_diferencial_4.png}
+                            \caption{5 harmônica}
+                            \label{fig:Manchester_diferencial_4}
+                        \end{center}
+                    \end{figure}
+                    \begin{figure}[H]
+                        \begin{center}
+                            \includegraphics[scale=0.45]{Manchester_diferencial_6.png}
+                            \caption{9 harmônica}
+                            \label{fig:Manchester_diferencial_6}
+                        \end{center}
+                    \end{figure}
+                \end{multicols}
+                %\captionsetup{figure = 2}
+                \caption{Sinal de entrada vs. Sinal filtrado vs. Sinal de saída de Manchester Diferencial}
+                \label{fig:Manchester_diferencial}
+            \end{figure}
+            Nesse caso percebemos que a comunicação foi eficaz apenas na 7 harmônica e usamos o mesmo tipo de implementação que nos NZR-I e Manchester logo os tempos do bit tão são exatos. Ele trabalha analisando o bit anterior e fazendo ou não a transição no inicio do bit e fazendo a transição no meio dele.
+            \begin{figure}[H]
+                \begin{center}
+                    \includegraphics[scale=0.45]{Saida_Manchester_diferencial.png}
+                    \caption{comparação entre Emissor e receptor}
+                    \label{fig:Saida_Manchester_diferencial}
+                \end{center}
+            \end{figure}
+            Analisando os gráficos e o "data ou" é perceptível que a comunicação foi eficaz  na sétima harmônica.
+    \section{Parte 4}
+        Nessa parte aplicamos um ruido branco no código da parte 1 e 2. Usamos a função "unifrnd" para fazer a simulação do ruido. Analisando o código podemos perceber que a saída é definida se um ponto é maior ou meno que 2.5, caso maior é 1 caso menor é 0, logo se o ruido tiver uma interferência maior que 2.5 ele ira atrapalhar na comunicação. No gráfico abaixo temos o sinal filtrado somado ao retorno da função "unifrnd" com parâmetro de -3 até 3:
+         \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.45]{ruido_grafico.png}
+                \caption{Emissor receptor com ruido}
+                \label{fig:ruido_grafico}
+            \end{center}
+        \end{figure}
+        Percebe-se que o sinal em geral tem o padrão da entrada mas o ruido pode afetou de forma desastrosa a comunicação. Esse código tinha uma comunicação quase eficaz a partir do primeiro harmônico e podemos perceber na imagem abaixo que o ruido arruinou a saída de quase todas os sinais, é questão de sorte a saída dar certo.
+        \begin{figure}[H]
+            \begin{center}
+                \includegraphics[scale=0.45]{ruido_saida.png}
+                \caption{Saída com ruido}
+                \label{fig:ruido_saida}
+            \end{center}
+        \end{figure}
+    \section{Conclusão}
+        Podemos concluir que o uso do maior harmônico torna a comunicação mas eficaz e que dependo da implementação podemos resolver problemas relativamente simples mas que atrapalhariam a comunicação. Em nenhum dos códigos usados a cima foi feita uma media dos valores do sinal filtrado para obter o bit correspondente, é provável que ao fazer isso o ruido não atrapalhasse tanto quanto foi mostrado.
+\end{document}

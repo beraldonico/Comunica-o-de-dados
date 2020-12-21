@@ -1,0 +1,113 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese,brazilian]{babel}
+\usepackage[top=2cm, bottom=2cm, left=4cm, right=4cm]{geometry}
+
+\title{Trabalho 6 comunicação de dados}
+\author{Nicolas Beraldo}
+\date{Novembro 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{caption}
+
+\begin{document}
+    \maketitle
+        \begin{center}
+            Este trabalho irá descrever os fundamentos, conexões, componentes e comportamentos do protocolo SPI (Serial Peripheral Interface).
+        \end{center}
+    \section*{Introdução}
+        SPI (Serial Peripheral Interface) é um protocolo de comunicação serial de single master que permite a comunicação a uma elevada taxa de transferência. Uma das suas características que o diferencia dos outros protocolos é ter um sinal com direção fixa, isso se deve por ser do tipo full-duplex. Mesmo usando dois sinais de comunicação a ele consegue manter as suas altas taxas de transferências, que alcançam 2Mbps, graças aos seus transistores em push-pull que também permitem uma comunicação de qualidade devido a pouca deformação do sinal.
+    
+    \section*{Conexões}
+        O protocolo SPI pode ser conhecido como “conexão serial de 4 fios” pois a quantidade minima de fios para o seu correto funcionamento são os quatro descritos a baixo:
+        \begin{itemize}
+            \item MOSI (Master Output slave Input): Canal de comunicação entre o master e o slave;
+            \item MISO (Master Input slave Output): Canal de comunicação entre o slave e o master;
+            \item SCLK (Serial Clock): Canal de transmissão do clock entre o master e o slave afim de manter sincronização;
+            \item SS (Slave Selector): Canal de seleção do slave.
+        \end{itemize}
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale = 0.5]{masterslave.png}
+            \caption{Conexões básicas de um SPI}
+            \label{fig:conexoes basicas}
+        \end{figure}
+        Na figura \ref{fig:conexoes basicas} é possível ver como são feitas as conexões dos 4 fios necessários. Em todos os casos em que este protocolo é usado sempre haverá uma conexão para o MOSI, uma para o MISO e uma para o SCLK. No caso do SS será necessário determinar o método de conexão dos slaves que será usada já que há duas formas de realizar essa conexão.
+    \section*{Funcionamento}
+        O protocolo consegue funcionar com apenas 1 master e 1 ou mais slaves, podendo serem usados inúmeros slaves. Para iniciar uma comunicação primeiro o master deve selecionar um clock para se comunicar com os slaves, em seguida o master seleciona o respectivo slave ao qual quer se comunicar, assim que ó sinal de clock é iniciado e a conexão SS está com nível logico 0 (ativa) é possível iniciar a comunicação. Por ser um protocolo com a característica full-duplex a cada ciclo de clock um BIT é enviado pelo canal MOSI e um pelo canal MISO, logo o master e o slave estão constantemente trocando informações entre eles, mesmo que apenas um deles irá usar a informação recebida.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale = .7]{masterslaveinterno.png}
+            \caption{Comunicação entre master e slave}
+            \label{fig:Comunicacao}
+        \end{figure}
+        Na figura \ref{fig:Comunicacao} é possível ver como as conexões funcionam na sua essência e como a comunicação full-duplex é realizada. É necessário que ambos os componente saibam qual o tamanho da mensagem a ser enviada, assim evitando estourar a capacidade dos “shift registers”, responsáveis por enviar/receber e armazenar os BITs. 
+        
+        Como os registradores dos “shift registers” estão conectados está representado na figura \ref{fig:shift registers} e são eles os responsáveis por converter as string de BITs de serie para paralelo e de paralelo para serie.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[scale= .7]{shift_register.png}
+            \caption{Shift register de 4 BITs}
+            \label{fig:shift registers}
+        \end{figure}
+        Na figura \ref{fig:shift registers} o “CLOCK” seria o “SCLK”, o “Serial Input” e “Serial Output” as conexão “MOSI” e “MISO”, dependendo quem é analisado, e o “SS“ não se encontra na imagem mas poderia ser o “chip enable” dos registradores.
+    \section*{Conexão master-slave}
+        Há dois métodos de realizar a conexão de 2 ou mais slaves ao mesmo master.
+        \begin{itemize}
+            \item
+                Conexão individual: Nesse tipo de configuração há uma conexão “SS“ para cada slave, logo o numero de porta é: 3 + “numero de slave”.
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[scale = 0.75]{master_slaves.png}
+                    \caption{Conexão individual}
+                    \label{fig:master_slaves}
+                \end{figure}
+                Na figura \ref{fig:master_slaves} mostra que as portas “MISO”, “MOSI” e ”SCLK” são as mesmas para todos os slaves e a porta “SS“ é única para cada slave. Esse tipo de configuração pode se tornar impraticável ou de difícil implementação dependendo do hardware.
+            \item
+                Daisy-chain:Nessa configuração os slaves são ligados em serie. O primeiro slave é conectado a saída do master, a saída desse slave e conectada a entrada do segundo slave e assim por diante até a saída do ultimo slave se conectar a entrada do master. Na figura \ref{fig:daisy_chain} é possível visualizar que sempre irá haver apenas 4 começões no master assim reduzindo o espaço necessário para a implementação desse protocolo.
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[scale = .75]{daisy_chain.png}
+                    \caption{Configuração daisy-chain}
+                    \label{fig:daisy_chain}
+                \end{figure}
+                Neste método o master prepara a mensagem e começa a rodar o clock para passar para os slaves, a primeira mensagem que o master prepara será transmitida até o ultimo slave mas irá passar por todos os slaves da cadeia, enquanto a ultima mensagem preparada irá para o primeiro slave. Apenas quando todos os slaves tiverem a mensagem corretamente armazenada o master dará um pulso na porta SS para ativar todos os slaves e eles processarem as suas mensagens.
+        \end{itemize}
+    \section*{Aplicações}
+        \begin{itemize}
+            \item Sensores: Temperatura, pressão, touch-screens, ADC, controles de videogame;
+            \item Controladores: Audio Codecs, Potenciômetros digitais, DAC;
+            \item Lentes de câmeras;
+            \item Comunicação: Ethernet, USB, IEEE;
+            \item Memorias: FLASH, EEPROM;
+            \item Relógio de tempo real;
+            \item Gerenciamento de imagens: LCD, LED;
+            \item MMC ou SD.
+        \end{itemize}
+    \section*{Exemplos}
+        A seguir serão mostrados dois exemplos de componentes que trabalham com o protocolo SPI.
+        \begin{itemize}
+            \item
+                Um ADC, conversor analógico-digital. Tem como função converter informações do mundo real para o mundo digital:
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[scale = .7]{ADC.png}
+                    \caption{Conversor analógico-digital}
+                    \label{fig:adc}
+                \end{figure}
+                Na figura \ref{fig:adc} é possível localizar a direita as entradas/saídas do conversor, nela temos o SCLK, CS, DOUT e DIN, que representam respectivamente SCLK, SS, MISO e MOSI. Essas entrada estão conectadas a interface que interpreta as informações.
+            \item
+                Um DAC, conversor digital-analógico. Tem como função converter informações do mundo virtual para o mundo real:
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[scale = .7]{DAC.png}
+                    \caption{Conversor digital-analógico}
+                    \label{fig:dac}
+                \end{figure}
+                Na figura \ref{fig:dac} é possivel localizar a esquerda as entradas/saídas SDI, CS, SCLK e SDO, que representam o MOSI, SS, SCLK e MISO respectivamente
+        \end{itemize}
+\end{document}
